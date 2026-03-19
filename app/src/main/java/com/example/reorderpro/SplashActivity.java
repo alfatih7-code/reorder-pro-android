@@ -4,105 +4,38 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.view.View;
-import android.view.animation.DecelerateInterpolator;
-
+import android.widget.ImageView;
+import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.google.android.material.card.MaterialCardView;
+import androidx.core.splashscreen.SplashScreen;
 
 public class SplashActivity extends AppCompatActivity {
 
-    private static final int SPLASH_DELAY = 1400;
-
-    private final Handler handler = new Handler(Looper.getMainLooper());
-    private Runnable navigateRunnable;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // ✅ القاعدة الذهبية: الـ SplashScreen لازم تكون أول سطر قبل super
+        SplashScreen splashScreen = SplashScreen.installSplashScreen(this);
+
         super.onCreate(savedInstanceState);
-
-        // Prevent duplicate instance
-        if (!isTaskRoot()) {
-            finish();
-            return;
-        }
-
         setContentView(R.layout.activity_splash);
 
-        setupAnimation();
+        // ربط العناصر
+        ImageView logo = findViewById(R.id.splash_logo);
+        TextView title = findViewById(R.id.app_name_text);
+        TextView developer = findViewById(R.id.dev_name_text);
 
-        navigateRunnable = () -> {
-            if (!isFinishing() && !isDestroyed()) {
-                startActivity(new Intent(SplashActivity.this, MainActivity.class));
-                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                finish();
-            }
-        };
+        // أنيميشن احترافي (Fade In)
+        logo.setAlpha(0f);
+        title.setAlpha(0f);
 
-        handler.postDelayed(navigateRunnable, SPLASH_DELAY);
-    }
+        logo.animate().alpha(1f).setDuration(1000).start();
+        title.animate().alpha(1f).setDuration(1000).setStartDelay(500).start();
 
-    // ================= ANIMATION =================
-
-    private void setupAnimation() {
-
-        try {
-            MaterialCardView logoCard = findViewById(R.id.logoCard);
-            View title = findViewById(R.id.title);
-            View subtitle = findViewById(R.id.subtitle);
-
-            if (logoCard != null) {
-                logoCard.setAlpha(0f);
-                logoCard.setScaleX(0.85f);
-                logoCard.setScaleY(0.85f);
-
-                logoCard.animate()
-                        .alpha(1f)
-                        .scaleX(1f)
-                        .scaleY(1f)
-                        .setDuration(600)
-                        .setInterpolator(new DecelerateInterpolator())
-                        .start();
-            }
-
-            if (title != null) {
-                title.setAlpha(0f);
-                title.setTranslationY(40f);
-
-                title.animate()
-                        .alpha(1f)
-                        .translationY(0)
-                        .setStartDelay(200)
-                        .setDuration(400)
-                        .setInterpolator(new DecelerateInterpolator())
-                        .start();
-            }
-
-            if (subtitle != null) {
-                subtitle.setAlpha(0f);
-                subtitle.setTranslationY(40f);
-
-                subtitle.animate()
-                        .alpha(1f)
-                        .translationY(0)
-                        .setStartDelay(350)
-                        .setDuration(400)
-                        .setInterpolator(new DecelerateInterpolator())
-                        .start();
-            }
-
-        } catch (Exception ignored) {}
-    }
-
-    // ================= CLEANUP =================
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-        if (navigateRunnable != null) {
-            handler.removeCallbacks(navigateRunnable);
-        }
+        // الانتقال للشاشة الرئيسية بعد 2.5 ثانية
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish(); // إغلاق شاشة السبلاش عشان ما يرجع ليها المستخدم
+        }, 2500);
     }
 }

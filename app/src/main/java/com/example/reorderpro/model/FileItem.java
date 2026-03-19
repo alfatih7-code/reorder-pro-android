@@ -1,111 +1,31 @@
-package com.example.reorderpro.model;
+package com.example.reorderpro;
 
-import androidx.documentfile.provider.DocumentFile;
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
 
-import java.util.Locale;
-
+@Entity(tableName = "files_table")
 public class FileItem {
+    @PrimaryKey @NonNull
+    public String fileUri;
+    public String oldName;
+    public String originalName;
+    public String newName;
+    public String fileType;
+    public long lastModified;
+    public long fileSize;
 
-    private final String name;
-    private final long lastModified;
-    private final DocumentFile file;
+    public FileItem() { this.fileUri = ""; }
 
-    public FileItem(String name, long lastModified, String type, DocumentFile file) {
-        this.name = name != null ? name : "";
+    @Ignore
+    public FileItem(@NonNull String fileUri, String oldName, String originalName, String newName, String fileType, long lastModified, long fileSize) {
+        this.fileUri = fileUri;
+        this.oldName = oldName;
+        this.originalName = originalName;
+        this.newName = newName;
+        this.fileType = fileType;
         this.lastModified = lastModified;
-        this.file = file;
-    }
-
-    // ================= BASIC =================
-
-    public String getName() {
-        return name;
-    }
-
-    public long getLastModified() {
-        return lastModified;
-    }
-
-    public DocumentFile getFile() {
-        return file;
-    }
-
-    // ================= EXTENSION =================
-
-    public String getExtension() {
-
-        int dot = name.lastIndexOf(".");
-
-        if (dot > 0 && dot < name.length() - 1) {
-            return name.substring(dot).toLowerCase(Locale.ROOT);
-        }
-
-        return "";
-    }
-
-    public String getBaseName() {
-
-        int dot = name.lastIndexOf(".");
-
-        if (dot > 0) {
-            return name.substring(0, dot);
-        }
-
-        return name;
-    }
-
-    // ================= SIZE =================
-
-    public long getSize() {
-        try {
-            return file != null ? file.length() : 0;
-        } catch (Exception e) {
-            return 0;
-        }
-    }
-
-    // ================= TYPE DETECTION (FIXED) =================
-
-    public boolean isImage() {
-        String ext = getExtension();
-        return ext.equals(".jpg") || ext.equals(".jpeg") || ext.equals(".png");
-    }
-
-    public boolean isVideo() {
-        String ext = getExtension();
-        return ext.equals(".mp4") || ext.equals(".mkv") || ext.equals(".avi");
-    }
-
-    public boolean isAudio() {
-        String ext = getExtension();
-        return ext.equals(".mp3") || ext.equals(".wav");
-    }
-
-    public boolean isDocument() {
-        String ext = getExtension();
-        return ext.equals(".pdf")
-                || ext.equals(".doc")
-                || ext.equals(".docx")
-                || ext.equals(".txt");
-    }
-
-    // ================= SMART PREFIX =================
-
-    public String getSmartPrefix() {
-
-        if (isImage()) return "IMG_";
-        if (isVideo()) return "VID_";
-        if (isAudio()) return "AUD_";
-        if (isDocument()) return "DOC_";
-
-        return "FILE_";
-    }
-
-    // ================= NAME BUILDER =================
-
-    public String buildSmartName(int index) {
-        return getSmartPrefix()
-                + String.format(Locale.ROOT, "%03d", index + 1)
-                + getExtension();
+        this.fileSize = fileSize;
     }
 }

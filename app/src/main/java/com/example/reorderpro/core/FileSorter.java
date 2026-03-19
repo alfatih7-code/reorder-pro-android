@@ -1,84 +1,59 @@
-package com.example.reorderpro.core;
+package com.example.reorderpro;
 
-import com.example.reorderpro.model.FileItem;
-
-import java.util.Comparator;
+import androidx.documentfile.provider.DocumentFile;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
 public class FileSorter {
 
-    public enum SortMode {
-        NAME,
-        DATE_ASC,
-        DATE_DESC,
-        SIZE,
-        TYPE
+    /**
+     * 🔥 محرك ذكاء الأنواع: يتعرف على الملفات بدقة عالية
+     * لتسهيل الفرز البصري للمستخدم في الـ Adapter
+     */
+    public static String getType(String fileName) {
+        if (fileName == null || !fileName.contains(".")) return "FILE";
+
+        String ext = fileName.substring(fileName.lastIndexOf(".")).toLowerCase();
+
+        // فئة الصور
+        if (ext.matches(".jpg|.png|.jpeg|.webp|.heic|.gif")) return "IMAGE";
+
+        // فئة الفيديو (المحاضرات والدروس)
+        if (ext.matches(".mp4|.mkv|.avi|.mov|.webm|.3gp")) return "VIDEO";
+
+        // فئة المستندات
+        if (ext.matches(".pdf|.docx|.doc|.txt|.pptx|.ppt|.xlsx")) return "DOCUMENT";
+
+        // فئة الصوتيات
+        if (ext.matches(".mp3|.wav|.m4a|.ogg|.aac")) return "AUDIO";
+
+        return "OTHER";
     }
 
-    // ================= MAIN =================
+    /**
+     * 🔥 دالة الترتيب الزمني الاحترافية
+     * @param files المصفوفة الخام من المجلد
+     * @param oldestFirst true للترتيب (أقدم -> أحدث)، false للعكس
+     * @return قائمة مرتبة ومنقحة (ملفات فقط بدون مجلدات فرعية)
+     */
+    public static List<DocumentFile> sortFilesByDate(DocumentFile[] files, boolean oldestFirst) {
+        List<DocumentFile> list = new ArrayList<>();
+        if (files == null) return list;
 
-    public static void sort(List<FileItem> files, SortMode mode) {
-
-        if (files == null || files.size() <= 1) return;
-
-        switch (mode) {
-
-            case NAME:
-                files.sort(NAME_COMPARATOR);
-                break;
-
-            case SIZE:
-                files.sort(SIZE_COMPARATOR);
-                break;
-
-            case TYPE:
-                files.sort(TYPE_COMPARATOR);
-                break;
-
-            case DATE_DESC:
-                files.sort(DATE_DESC_COMPARATOR);
-                break;
-
-            case DATE_ASC:
-            default:
-                files.sort(DATE_ASC_COMPARATOR);
-                break;
+        // تنقية القائمة: استبعاد المجلدات الفارغة أو المخفية
+        for (DocumentFile f : files) {
+            if (f.isFile() && !f.getName().startsWith(".")) {
+                list.add(f);
+            }
         }
-    }
 
-    // ================= COMPARATORS =================
+        // الترتيب باستخدام Comparator ذكي يدعم الاتجاهين
+        Collections.sort(list, (f1, f2) -> {
+            int result = Long.compare(f1.lastModified(), f2.lastModified());
+            return oldestFirst ? result : -result; // الضربة القاضية: عكس الترتيب بضغطة زر
+        });
 
-    private static final Comparator<FileItem> NAME_COMPARATOR =
-            Comparator.comparing(FileSorter::safeName);
-
-    private static final Comparator<FileItem> DATE_ASC_COMPARATOR =
-            Comparator.comparingLong(FileItem::getLastModified);
-
-    private static final Comparator<FileItem> DATE_DESC_COMPARATOR =
-            Comparator.comparingLong(FileItem::getLastModified).reversed();
-
-    private static final Comparator<FileItem> SIZE_COMPARATOR =
-            Comparator.comparingLong(FileItem::getSize);
-
-    private static final Comparator<FileItem> TYPE_COMPARATOR =
-            Comparator.comparingInt(FileSorter::getTypePriority)
-                    .thenComparing(FileSorter::safeName);
-
-    // ================= HELPERS =================
-
-    private static String safeName(FileItem f) {
-        String name = f.getName();
-        return name == null ? "" : name.toLowerCase(Locale.ROOT);
-    }
-
-    private static int getTypePriority(FileItem f) {
-
-        if (f.isImage()) return 1;
-        if (f.isVideo()) return 2;
-        if (f.isDocument()) return 3;
-        if (f.isAudio()) return 4;
-
-        return 5;
+        return list;
     }
 }

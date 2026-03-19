@@ -1,27 +1,27 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <!-- App -->
     <string name="app_name">ReOrder Pro</string>
-    <string name="subtitle">Smart File Organizer</string>
+    <string name="app_tagline">Chronological Management</string>
 
-    <!-- Buttons -->
-    <string name="select_folder">Select Folder</string>
-    <string name="apply_changes">Apply Changes</string>
-    <string name="undo_changes">Undo Changes</string>
+    <string name="dev_credit">Developed by Al-Fatih</string>
 
-    <!-- States -->
-    <string name="empty_state">Select a folder to start</string>
-    <string name="no_files">No files found</string>
+    <string name="btn_select_folder">SELECT FOLDER</string>
+    <string name="btn_apply_changes">APPLY CHANGES</string>
+    <string name="btn_undo_changes">UNDO CHANGES</string>
 
-    <!-- Status -->
-    <string name="status_format">Files: %1$d | Images: %2$d | Videos: %3$d</string>
+    <string name="status_waiting">Waiting for folder selection...</string>
+    <string name="status_scanning">Scanning files, please wait...</string>
+    <string name="status_ready">Found %1$d files ready for reordering</string>
+    <string name="status_success">Successfully renamed %1$d files!</string>
+    <string name="status_undone">Reverted to original names</string>
 
-    <!-- Progress -->
-    <string name="rename_complete">Rename completed</string>
-    <string name="undo_complete">Undo completed</string>
+    <string name="style_header">REORDERING STYLE</string>
+    <string name="style_smart">Smart</string>
+    <string name="style_original">Origin</string>
+    <string name="style_numbers">Num</string>
+    <string name="style_custom">Custom</string>
+    <string name="hint_custom_prefix">Prefix (e.g. Lecture)</string>
 
-    <!-- Errors -->
-    <string name="error_loading">Error loading files</string>
-
+    <string name="error_no_permission">Storage permission is required</string>
+    <string name="error_empty_folder">This folder contains no supported files</string>
+    <string name="error_generic">Something went wrong, please try again</string>
 </resources>
