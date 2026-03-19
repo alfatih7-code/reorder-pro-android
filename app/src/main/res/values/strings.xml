@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- App -->
+    <string name="app_name">ReOrder Pro</string>
+    <string name="subtitle">Smart File Organizer</string>
+
+    <!-- Buttons -->
+    <string name="select_folder">Select Folder</string>
+    <string name="apply_changes">Apply Changes</string>
+    <string name="undo_changes">Undo Changes</string>
+
+    <!-- States -->
+    <string name="empty_state">Select a folder to start</string>
+    <string name="no_files">No files found</string>
+
+    <!-- Status -->
+    <string name="status_format">Files: %1$d | Images: %2$d | Videos: %3$d</string>
+
+    <!-- Progress -->
+    <string name="rename_complete">Rename completed</string>
+    <string name="undo_complete">Undo completed</string>
+
+    <!-- Errors -->
+    <string name="error_loading">Error loading files</string>
+
+</resources>
